@@ -7,10 +7,81 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
 
+    //function to handle xhr response
+    const handleResponse = (xhr) => {
+      const type = xhr.getResponseHeader('content-type');
+	  
+      const content = document.querySelector("#content");
+      
+      const h1 = document.createElement('h1');
+      const p = document.createElement('p');
+      
+	  //JSON
+      if(type === 'application/json') {
+        const obj = JSON.parse(xhr.response);
+        h1.textContent = `Id: ${obj.id}`;
+        p.textContent = `Message: ${obj.message}`; 
+        console.dir(obj);
+      }
+      //XML
+      else if (type === 'text/xml') {
+        const id = xhr.responseXML.querySelector('id').textContent;
+        const message = xhr.responseXML.querySelector('message').textContent;
+		
+        h1.textContent = `Id: ${id}`;
+        p.textContent = `Message: ${message}`; 
+        
+        console.dir(xhr.response);
+      }
+      else {
+        h1.textContent = 'Not Found.';
+        p.textContent = 'Requested page could not be found.'; 
+      }
+      
+	  //write message
+      content.innerHTML = '';
+      content.appendChild(h1);
+      content.appendChild(p);
+    };
+    
+    //function to send an xhr request
+    const sendAjax = (url, acceptedType) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.setRequestHeader ("Accept", acceptedType);
+
+      xhr.onload = () => handleResponse(xhr);
+      
+      xhr.send();
+    };
+
+    const init = () => {
+      const submitButton = document.querySelector("#send");
+      
+      let type = 'application/json';
+      let url = '/success';
+      
+      const send = () => {
+        //console.log(url+', '+type);
+        sendAjax(url, type);
+      }
+      
+      document.querySelector('#page').onchange = (e) =>{
+        url = e.target.value;
+      };
+      document.querySelector('#type').onchange = (e)=>{
+        type = e.target.value;
+      };
+      
+      submitButton.addEventListener('click', send);
+    };
+
+    window.onload = init;
+
   </script>
 </head>
 <body>
-  <section id="top">
+<section id="top">
     <h3>Status Code Tests</h3>
     <select id="page">
       <option value="/success">Success</option>
@@ -20,6 +91,7 @@
       <option value="/internal">Internal</option>
       <option value="/notImplemented">Not Implemented</option>
       <option value="/notFound">Not Found</option>
+      <option value="/cats">catsss</option>
     </select>
     <select id="type">
       <option value="application/json">JSON</option>
