@@ -33,7 +33,7 @@ const getIndex = (request, response, status) => {
 };
 // get css page
 const getCSS = (request, response) => {
-  //console.log(request.url);
+  // console.log(request.url);
   respond(request, response, style, 'text/css');
 };
 

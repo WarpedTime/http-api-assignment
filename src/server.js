@@ -7,7 +7,7 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 // check the url query for implemented queries
 const handleQuery = (queryObj) => {
-  //console.log(`[query] -> ${JSON.stringify(queryObj)}`);
+  // console.log(`[query] -> ${JSON.stringify(queryObj)}`);
 
   const urlQuery = {};
 
@@ -35,18 +35,19 @@ const handleQuery = (queryObj) => {
 };
 
 // handle the url request and queries
-const handleUrl = (request, response, acceptedTypes, parsedUrl) => {
+const handleUrl = (request, response, parsedUrl) => {
   // console.log(request.url+" -> "+ acceptedTypes);
   const msg = {
     id: 'No id',
     message: 'No message here. If you see this then I messed up somewhere...',
   };
+  const acceptedTypes = request.headers.accept.split(',');
 
   let urlQuery = {};
 
   // if url has a query check those and pass of to queryHandler.
   if (parsedUrl.query) {
-    //console.log(`url query: ${JSON.stringify(parsedUrl.query)}`);
+    // console.log(`url query: ${JSON.stringify(parsedUrl.query)}`);
     const params = query.parse(parsedUrl.query);
 
     // check query
@@ -136,10 +137,9 @@ const handleUrl = (request, response, acceptedTypes, parsedUrl) => {
 
 const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
-  let acceptedTypes = request.headers.accept.split(',');
 
   // handle request url
-  handleUrl(request, response, acceptedTypes, parsedUrl);
+  handleUrl(request, response, parsedUrl);
 };
 
 http.createServer(onRequest).listen(port);
