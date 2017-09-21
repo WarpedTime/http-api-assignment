@@ -136,7 +136,7 @@ const handleUrl = (request, response, acceptedTypes, parsedUrl) => {
 
 const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url);
-  const acceptedTypes = request.headers.accept.split(',');
+  let acceptedTypes = request.headers.accept.split(',');
 
   // handle request url
   handleUrl(request, response, acceptedTypes, parsedUrl);
